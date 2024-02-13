@@ -46,6 +46,7 @@ By: Justin Pearson & Ben Walsh
 Jump Queen will be a 2D climbing platformer, taking inspiration from the game Jump King. The player will try to move their way up the play area which will be in a castle to complete the game. The player can only move by jumping and can control the height and direction of their jump.
 
 ### Development Schedule <a name="development-schedule"></a>
+![Development schedule image](JumpQueenDevSchedule.png)
 
 ## Game Overview <a name="game-overview"></a>
 ### Game Concept <a name="game-concept"></a>
