@@ -2808,10 +2808,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bda1a6efa43524db8fd098e9deeea2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 12
+  moveSpeed: 10
   offsetValue: 1
-  jumpForce: 12
+  jumpForce: 25
   jumpTimeMax: 1
+  jumpTimeMin: 0.4
+  jumpAngle: 25
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
