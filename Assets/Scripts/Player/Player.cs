@@ -108,6 +108,7 @@ public class Player : MonoBehaviour
             // Set appropriate animation states
             anim.SetBool("isCrouching", false);
             anim.SetBool("isJumping", true);
+            jumpTimeCounter = 0f; //reset jump timer
         }
     }
 
@@ -129,10 +130,10 @@ public class Player : MonoBehaviour
         // Check if the player is touching any collider
         if (groundHit.collider != null)
         {
-                // If the normal is vertical, treat it as ground
-                anim.SetBool("isJumping", false);
-                anim.SetBool("isFalling", false);
-                return true;
+            // If the normal is vertical, treat it as ground
+            anim.SetBool("isJumping", false);
+            anim.SetBool("isFalling", false);
+            return true;
         }
         else
         {
@@ -143,7 +144,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                anim.SetBool("isFalling", false);
+                anim.SetBool("isJumping", true);
             }
             return false;
         }
