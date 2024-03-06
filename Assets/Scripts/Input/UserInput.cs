@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+/// <summary>
+/// setup of a singleton class to take in our input from the user
+/// </summary>
 public class UserInput : MonoBehaviour
 {
     public static UserInput instance;
