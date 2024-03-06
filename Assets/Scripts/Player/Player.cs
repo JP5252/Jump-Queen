@@ -87,19 +87,6 @@ public class Player : MonoBehaviour
         if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && IsGrounded())
         {
             // Get the player's input direction using the moveInput
-            moveInput = UserInput.instance.moveInput.x;
-
-            // Calculate jump force based on charge time
-            float chargeFactor = Mathf.Clamp01(jumpTimeCounter / jumpTimeMax);
-            float appliedJumpForce = Mathf.Lerp(jumpForce * jumpTimeMin, jumpForce * jumpTimeMax, chargeFactor);
-
-            // Apply constant horizontal velocity during jump
-            float horizontalVelocity = moveInput;
-
-            // Apply the calculated velocities
-            rb.velocity = new Vector2(horizontalVelocity, appliedJumpForce);
-
-            //get the players input direction using the moveInput
             moveInput = UserInput.instance.moveInput.x * 10;
 
             //if the jump is less than min charge
