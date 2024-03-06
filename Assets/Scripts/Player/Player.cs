@@ -10,15 +10,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpForce;
     [SerializeField] private float jumpTimeMax;
     [SerializeField] private float jumpTimeMin;
-    [SerializeField] private float jumpAngle;
 
-    [Header("Jump")]
+    [Header("Wall")]
     [SerializeField] private LayerMask whatIsGround;
 
     [HideInInspector] public bool isFacingRight;
 
     private Rigidbody2D rb;
-    private Collider2D col;
+    private Collider2D col;     
     private Animator anim;
     private float moveInput;
 
@@ -43,6 +42,7 @@ public class Player : MonoBehaviour
         }
         
         Jump();
+
     }
 
     #region Movement Functions
@@ -94,10 +94,29 @@ public class Player : MonoBehaviour
             float appliedJumpForce = Mathf.Lerp(jumpForce * jumpTimeMin, jumpForce * jumpTimeMax, chargeFactor);
 
             // Apply constant horizontal velocity during jump
-            float horizontalVelocity = moveInput * jumpAngle;
+            float horizontalVelocity = moveInput;
 
             // Apply the calculated velocities
             rb.velocity = new Vector2(horizontalVelocity, appliedJumpForce);
+
+            //get the players input direction using the moveInput
+            moveInput = UserInput.instance.moveInput.x * 10;
+
+            //if the jump is less than min charge
+            if (jumpTimeCounter < jumpTimeMin)
+            {
+                rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeMin * 2);
+            }
+            //if the jump is less than max charge
+            else if (jumpTimeCounter < jumpTimeMax)
+            {
+                rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeCounter * 2);
+            }
+            //if the jump is charged to max
+            else
+            {
+                rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeMax * 2);
+            }
 
             // Set appropriate animation states
             anim.SetBool("isCrouching", false);
@@ -123,21 +142,10 @@ public class Player : MonoBehaviour
         // Check if the player is touching any collider
         if (groundHit.collider != null)
         {
-            // Check if the normal of the collision is not completely vertical (indicating a wall)
-            if (Vector2.Dot(groundHit.normal, Vector2.up) < 0.95f)
-            {
-                // Bounce off the wall
-                Vector2 wallNormal = groundHit.normal;
-                rb.velocity = Vector2.Reflect(rb.velocity, wallNormal);
-                return false;
-            }
-            else
-            {
                 // If the normal is vertical, treat it as ground
                 anim.SetBool("isJumping", false);
                 anim.SetBool("isFalling", false);
                 return true;
-            }
         }
         else
         {
@@ -153,10 +161,6 @@ public class Player : MonoBehaviour
             return false;
         }
     }
-
-
-
-
 
     #endregion
 
