@@ -42,34 +42,36 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        Move();
-        Jump();
+        if (IsGrounded())
+        {
+            Move();
+            Jump();
+        }
     }
 
     #region Movement Functions
-    /// <summary>
-    /// this is the logic for movement in the game, we first check that the player is not crouching and is on the ground
-    /// then set the player animation for iswalking on if the move input is there and peform a move check to make sure the player
-    /// is facing the right direction, after that we can set the players x velocity to the movespeed in the direction they are going.
-    /// </summary>
+
     private void Move()
-    {       
-        if (!anim.GetBool("isCrouching") && IsGrounded())
+    {
+        moveInput = UserInput.instance.moveInput.x;
+
+        if (moveInput > 0 || moveInput < 0)
         {
-            moveInput = UserInput.instance.moveInput.x;
-            if (moveInput > 0 || moveInput < 0)
-            {
-                anim.SetBool("isWalking", true);
-                TurnCheck();
-            }
-            else
-            {
-                anim.SetBool("isWalking", false);
-            }
-            
-            rb.velocity = new Vector2(moveInput * moveSpeed, 0f);
+            anim.SetBool("isWalking", true);
+            TurnCheck();
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
+
+        // check if player is crouched before moving them
+        if (!anim.GetBool("isCrouching"))
+        {
+            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
         }
     }
+
 
     /// <summary>
     /// This is the logic for the jump, first there will be a check if the player is grounded and if they are, then the player may begin their jump
@@ -89,7 +91,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-            if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && IsGrounded())
+            if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
             {
                 anim.SetBool("isWalking", false);
                 jumpTimeCounter = jumpTimeMin;
@@ -97,7 +99,7 @@ public class Player : MonoBehaviour
                 rb.velocity = new Vector2(0f, 0f);
             }
 
-            if (UserInput.instance.controls.Jumping.Jump.IsPressed() && IsGrounded())
+            if (UserInput.instance.controls.Jumping.Jump.IsPressed())
             {
                 Debug.Log(jumpTimeCounter);
                 if (jumpTimeCounter <= jumpTimeMax)
@@ -106,19 +108,19 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && IsGrounded())
+            if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
             {
                 // get the player's input direction using the moveInput
                 moveInput = UserInput.instance.moveInput.x * 10;
 
-                Debug.Log("velocity at jump" + jumpTimeCounter);
-
-                // set appropriate animation states
-                anim.SetBool("isCrouching", false);
-                anim.SetBool("isJumping", true);
+                Debug.Log("velocity at jump " + jumpTimeCounter);
 
                 // execute jump
-                rb.velocity = new Vector2(moveInput, jumpTimeCounter * 2);
+                rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeCounter * 2);
+
+             // set appropriate animation states
+                anim.SetBool("isCrouching", false);
+                anim.SetBool("isJumping", true);
         }
     }
 
