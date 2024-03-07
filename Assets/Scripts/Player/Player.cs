@@ -21,8 +21,7 @@ public class Player : MonoBehaviour
     private Animator anim;
     private float moveInput;
 
-    private float jumpTimeCounter = 0f;
-    private float jumpVelocity;
+    private float jumpTimeCounter;
 
     private RaycastHit2D groundHit;
 
@@ -90,49 +89,36 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        if (IsGrounded())
-        {
-            if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
+            if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && IsGrounded())
             {
-                jumpTimeCounter = 0f;
+                anim.SetBool("isWalking", false);
+                jumpTimeCounter = jumpTimeMin;
                 anim.SetBool("isCrouching", true);
                 rb.velocity = new Vector2(0f, 0f);
             }
 
-            if (UserInput.instance.controls.Jumping.Jump.IsPressed())
+            if (UserInput.instance.controls.Jumping.Jump.IsPressed() && IsGrounded())
             {
-                jumpTimeCounter += Time.deltaTime;
+                Debug.Log(jumpTimeCounter);
+                if (jumpTimeCounter <= jumpTimeMax)
+                {
+                    jumpTimeCounter += Time.deltaTime;
+                }
             }
 
-            if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
+            if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && IsGrounded())
             {
                 // get the player's input direction using the moveInput
                 moveInput = UserInput.instance.moveInput.x * 10;
 
-                // if the jump is less than min charge
-                if (jumpTimeCounter < jumpTimeMin)
-                {
-                    jumpVelocity = jumpForce * jumpTimeMin * 2;
-                }
-                // if the jump is less than max charge
-                else if (jumpTimeCounter < jumpTimeMax)
-                {
-                    jumpVelocity = jumpForce * jumpTimeCounter * 2;                    
-                }
-                // if the jump is charged to max
-                else
-                {
-                    jumpVelocity = jumpForce * jumpTimeMax * 2;
-                }
-
-                // execute jump
-                rb.velocity = new Vector2(moveInput, jumpVelocity);
+                Debug.Log("velocity at jump" + jumpTimeCounter);
 
                 // set appropriate animation states
                 anim.SetBool("isCrouching", false);
                 anim.SetBool("isJumping", true);
-                jumpTimeCounter = 0f; // reset jump timer
-            }
+
+                // execute jump
+                rb.velocity = new Vector2(moveInput, jumpTimeCounter * 2);
         }
     }
 

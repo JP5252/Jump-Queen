@@ -5245,7 +5245,7 @@ MonoBehaviour:
   moveSpeed: 10
   offsetValue: 1
   jumpForce: 12
-  jumpTimeMax: 1
+  jumpTimeMax: 2
   jumpTimeMin: 0.4
   whatIsGround:
     serializedVersion: 2
