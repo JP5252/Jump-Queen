@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -14,16 +15,21 @@ public class Player : MonoBehaviour
     [Header("Wall")]
     [SerializeField] private LayerMask whatIsGround;
 
+    [Header("Fall")]
+    [SerializeField] private float bigFallHeight;
+
     [HideInInspector] public bool isFacingRight;
 
     private Rigidbody2D rb;
-    private Collider2D col;     
+    private Collider2D col;
     private Animator anim;
     private float moveInput;
 
     private float jumpTimeCounter;
 
     private RaycastHit2D groundHit;
+
+    private Vector3 lastPosition;
 
     /// <summary>
     /// Setting our components for rigidbody, animations, and collider
@@ -57,6 +63,7 @@ public class Player : MonoBehaviour
 
         if (moveInput > 0 || moveInput < 0)
         {
+            anim.SetBool("bigFall", false);
             anim.SetBool("isWalking", true);
             TurnCheck();
         }
@@ -91,36 +98,40 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-            if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
+        if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
+        {
+            anim.SetBool("isWalking", false);
+            jumpTimeCounter = 0f;
+            anim.SetBool("bigFall", false);
+            anim.SetBool("isCrouching", true);
+            rb.velocity = new Vector2(0f, 0f);
+        }
+
+        if (UserInput.instance.controls.Jumping.Jump.IsPressed())
+        {
+            if (jumpTimeCounter <= jumpTimeMax)
             {
-                anim.SetBool("isWalking", false);
+                jumpTimeCounter += Time.deltaTime;
+            }
+        }
+
+        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
+        {
+            // set counter to min if its below
+            if (jumpTimeCounter < jumpTimeMin)
+            {
                 jumpTimeCounter = jumpTimeMin;
-                anim.SetBool("isCrouching", true);
-                rb.velocity = new Vector2(0f, 0f);
             }
+            // get the player's input direction using the moveInput
+            moveInput = UserInput.instance.moveInput.x * 10f;
 
-            if (UserInput.instance.controls.Jumping.Jump.IsPressed())
-            {
-                Debug.Log(jumpTimeCounter);
-                if (jumpTimeCounter <= jumpTimeMax)
-                {
-                    jumpTimeCounter += Time.deltaTime;
-                }
-            }
+            // execute jump
+            rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeCounter * 2);
 
-            if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
-            {
-                // get the player's input direction using the moveInput
-                moveInput = UserInput.instance.moveInput.x * 10;
-
-                Debug.Log("velocity at jump " + jumpTimeCounter);
-
-                // execute jump
-                rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeCounter * 2);
-
-             // set appropriate animation states
-                anim.SetBool("isCrouching", false);
-                anim.SetBool("isJumping", true);
+            // set appropriate animation states
+            anim.SetBool("isCrouching", false);
+            anim.SetBool("isJumping", true);
+            jumpTimeCounter = 0f;
         }
     }
 
@@ -137,11 +148,12 @@ public class Player : MonoBehaviour
     private bool IsGrounded()
     {
         // perform boxcast to check for any collision
-        groundHit = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, 0.25f, whatIsGround);
+        groundHit = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0f, Vector2.down, 0.1f, whatIsGround);
 
         // check if the player is touching any collider
         if (groundHit.collider != null)
         {
+            CheckBigFall();
             // if the normal is vertical, treat it as ground
             anim.SetBool("isJumping", false);
             anim.SetBool("isFalling", false);
@@ -150,9 +162,11 @@ public class Player : MonoBehaviour
         else
         {
             // if no collider is hit, and velocity is negative treat it as falling
-            if (rb.velocity.y < 0)
+            if (rb.velocity.y <= 0 && !anim.GetBool("isFalling"))
             {
                 anim.SetBool("isFalling", true);
+                //set position when fall begins to determine big fall
+                lastPosition = rb.position;
             }
             // otherwise treat it as jumping
             else
@@ -201,6 +215,24 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Euler(rotator);
             isFacingRight = !isFacingRight;
         }
+    }
+
+    #endregion
+
+    #region Big Fall Checks
+    /// <summary>
+    /// checks if the player falls a distance greater than bigFallHeight and activates bigFall animation if true
+    /// </summary>
+    private void CheckBigFall()
+    {
+        float fallDistance = lastPosition.y - rb.position.y;
+        Debug.Log(fallDistance);
+        if (fallDistance > bigFallHeight)
+        {
+            anim.SetBool("bigFall", true);
+        }
+
+        lastPosition = transform.position;
     }
 
     #endregion
