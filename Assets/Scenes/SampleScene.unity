@@ -5244,7 +5244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   offsetValue: 1
-  jumpForce: 7.5
+  jumpForce: 7.8
   jumpTimeMax: 1.5
   jumpTimeMin: 0.4
   whatIsGround:
