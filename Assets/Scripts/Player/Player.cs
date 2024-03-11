@@ -8,9 +8,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float offsetValue;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce;
+    [SerializeField] private float verticalJumpForce;
     [SerializeField] private float jumpTimeMax;
     [SerializeField] private float jumpTimeMin;
+    [SerializeField] private float horizontalJumpForce;
 
     [Header("Wall")]
     [SerializeField] private LayerMask whatIsGround;
@@ -56,7 +57,11 @@ public class Player : MonoBehaviour
     }
 
     #region Movement Functions
-
+    /// <summary>
+    /// this is the logic for movement in the game, we first check that the player is not crouching and is on the ground
+    /// then set the player animation for iswalking on if the move input is there and peform a move check to make sure the player
+    /// is facing the right direction, after that we can set the players x velocity to the movespeed in the direction they are going.
+    /// </summary>
     private void Move()
     {
         moveInput = UserInput.instance.moveInput.x;
@@ -72,12 +77,13 @@ public class Player : MonoBehaviour
             anim.SetBool("isWalking", false);
         }
 
-        // check if player is crouched before moving them
-        if (!anim.GetBool("isCrouching"))
+        // Check if player is crouched before moving them and that they are not moving vertically at a high speed like jumping
+        if (!anim.GetBool("isCrouching") && rb.velocity.y < 1)
         {
             rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
         }
     }
+
 
 
     /// <summary>
@@ -100,7 +106,6 @@ public class Player : MonoBehaviour
     {
         if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
         {
-            anim.SetBool("isWalking", false);
             jumpTimeCounter = 0f;
             anim.SetBool("bigFall", false);
             anim.SetBool("isCrouching", true);
@@ -117,20 +122,22 @@ public class Player : MonoBehaviour
 
         if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
         {
+                
             // set counter to min if its below
             if (jumpTimeCounter < jumpTimeMin)
             {
                 jumpTimeCounter = jumpTimeMin;
             }
             // get the player's input direction using the moveInput
-            moveInput = UserInput.instance.moveInput.x * 10f;
+            moveInput = UserInput.instance.moveInput.x;
 
             // execute jump
-            rb.velocity = new Vector2(moveInput, jumpForce * jumpTimeCounter * 2);
+            rb.velocity = new Vector2(moveInput * horizontalJumpForce, verticalJumpForce * jumpTimeCounter * 2);
 
             // set appropriate animation states
-            anim.SetBool("isCrouching", false);
             anim.SetBool("isJumping", true);
+            anim.SetBool("isCrouching", false);
+            // reset jump counter
             jumpTimeCounter = 0f;
         }
     }
@@ -226,7 +233,6 @@ public class Player : MonoBehaviour
     private void CheckBigFall()
     {
         float fallDistance = lastPosition.y - rb.position.y;
-        Debug.Log(fallDistance);
         if (fallDistance > bigFallHeight)
         {
             anim.SetBool("bigFall", true);
