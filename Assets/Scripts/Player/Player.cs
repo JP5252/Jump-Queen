@@ -120,7 +120,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame())
+        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && anim.GetBool("isCrouching"))
         {
                 
             // set counter to min if its below
