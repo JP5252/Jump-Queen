@@ -4933,6 +4933,7 @@ GameObject:
   - component: {fileID: 535451492}
   - component: {fileID: 535451491}
   - component: {fileID: 535451490}
+  - component: {fileID: 535451493}
   m_Layer: 0
   m_Name: gem (1)
   m_TagString: Untagged
@@ -5065,6 +5066,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &535451493
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535451488}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5d147bc723e2f40679fd21829960e69f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &535930321
 GameObject:
   m_ObjectHideFlags: 0
@@ -9641,6 +9663,7 @@ GameObject:
   - component: {fileID: 1365890342}
   - component: {fileID: 1365890341}
   - component: {fileID: 1365890344}
+  - component: {fileID: 1365890345}
   m_Layer: 0
   m_Name: gem
   m_TagString: Untagged
@@ -9773,6 +9796,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gemCounterText: {fileID: 0}
+--- !u!95 &1365890345
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365890340}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5d147bc723e2f40679fd21829960e69f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1445827234
 GameObject:
   m_ObjectHideFlags: 0
@@ -14440,6 +14484,7 @@ GameObject:
   - component: {fileID: 1641629898}
   - component: {fileID: 1641629897}
   - component: {fileID: 1641629896}
+  - component: {fileID: 1641629899}
   m_Layer: 0
   m_Name: gem1
   m_TagString: Untagged
@@ -14572,6 +14617,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1641629899
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641629894}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5d147bc723e2f40679fd21829960e69f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2130579260
 GameObject:
   m_ObjectHideFlags: 0

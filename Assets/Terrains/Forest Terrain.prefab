@@ -1859,7 +1859,7 @@ GameObject:
   - component: {fileID: 188414356487991037}
   - component: {fileID: 3387348375012850956}
   m_Layer: 0
-  m_Name: Terrain
+  m_Name: Forest Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
