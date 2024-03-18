@@ -118,6 +118,19 @@ public class Player : MonoBehaviour
             {
                 jumpTimeCounter += Time.deltaTime;
             }
+            else
+            {
+                moveInput = UserInput.instance.moveInput.x;
+
+                // execute jump
+                rb.velocity = new Vector2(moveInput * horizontalJumpForce, verticalJumpForce * jumpTimeMax * 2);
+
+                // set appropriate animation states
+                anim.SetBool("isJumping", true);
+                anim.SetBool("isCrouching", false);
+                // reset jump counter
+                jumpTimeCounter = 0f;
+            }
         }
 
         if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && anim.GetBool("isCrouching"))

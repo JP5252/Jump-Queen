@@ -5386,16 +5386,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bda1a6efa43524db8fd098e9deeea2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
+  moveSpeed: 5
   offsetValue: 1
   verticalJumpForce: 12
   jumpTimeMax: 1
   jumpTimeMin: 0.4
-  horizontalJumpForce: 10
+  horizontalJumpForce: 12
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  bigFallHeight: 9
+  bigFallHeight: 11
   isFacingRight: 0
 --- !u!1 &969252779
 GameObject:
