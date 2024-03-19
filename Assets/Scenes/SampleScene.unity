@@ -66805,7 +66805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cfde384346918e418152a1ecd7fc0a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gemCounterText: {fileID: 0}
+  gemCounterText: {fileID: 759511987}
 --- !u!1 &969252779
 GameObject:
   m_ObjectHideFlags: 0
