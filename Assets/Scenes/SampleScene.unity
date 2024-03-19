@@ -66726,7 +66726,7 @@ GameObject:
   - component: {fileID: 759511987}
   - component: {fileID: 759511989}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: GemCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72430,7 +72430,7 @@ GameObject:
   - component: {fileID: 1447075579}
   - component: {fileID: 1447075578}
   m_Layer: 5
-  m_Name: height
+  m_Name: Height
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72676,7 +72676,7 @@ GameObject:
   - component: {fileID: 2087460520}
   - component: {fileID: 2087460519}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
