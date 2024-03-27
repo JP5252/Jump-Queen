@@ -5,6 +5,8 @@ public class gems : MonoBehaviour
 {
     public Text gemCounterText;
     public static int gemCount = 0;
+    public GameObject Audio;
+    private AudioSource gemsound;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,7 +14,8 @@ public class gems : MonoBehaviour
         {
             gemCount++;
             UpdateGemCounter();
-
+            gemsound = Audio.transform.Find("gemsound").GetComponent<AudioSource>();
+            gemsound.Play();
             Destroy(gameObject);
         }
     }
