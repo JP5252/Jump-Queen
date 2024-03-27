@@ -32,6 +32,13 @@ public class Player : MonoBehaviour
 
     private Vector3 lastPosition;
 
+
+    public GameObject Audio;
+    private AudioSource jump;
+    private AudioSource landing;
+    private AudioSource hardLanding;
+    
+
     /// <summary>
     /// Setting our components for rigidbody, animations, and collider
     /// </summary>
@@ -42,6 +49,25 @@ public class Player : MonoBehaviour
         col = GetComponent<Collider2D>();
 
         isFacingRight = true;
+
+
+        // Assign the AudioSource components from child GameObjects
+        if (Audio != null)
+        {
+            jump = Audio.transform.Find("jump").GetComponent<AudioSource>();
+            landing = Audio.transform.Find("landing").GetComponent<AudioSource>();
+            hardLanding = Audio.transform.Find("hardLanding").GetComponent<AudioSource>();
+        }
+        else
+        {
+            Debug.LogError("The Audio GameObject is missing.");
+        }
+
+        // Check if any of the AudioSource components are null
+        if (jump == null || landing == null || hardLanding == null)
+        {
+            Debug.LogError("One or more AudioSource components are missing.");
+        }
     }
 
     /// <summary>
@@ -110,6 +136,7 @@ public class Player : MonoBehaviour
             anim.SetBool("bigFall", false);
             anim.SetBool("isCrouching", true);
             rb.velocity = new Vector2(0f, 0f);
+            
         }
 
         if (UserInput.instance.controls.Jumping.Jump.IsPressed())
@@ -130,6 +157,7 @@ public class Player : MonoBehaviour
                 anim.SetBool("isCrouching", false);
                 // reset jump counter
                 jumpTimeCounter = 0f;
+                jump.Play();
             }
         }
 
@@ -147,12 +175,15 @@ public class Player : MonoBehaviour
             // execute jump
             rb.velocity = new Vector2(moveInput * horizontalJumpForce, verticalJumpForce * jumpTimeCounter * 2);
 
+            jump.Play();
+
             // set appropriate animation states
             anim.SetBool("isJumping", true);
             anim.SetBool("isCrouching", false);
             // reset jump counter
             jumpTimeCounter = 0f;
         }
+
     }
 
     #endregion
@@ -249,6 +280,11 @@ public class Player : MonoBehaviour
         if (fallDistance > bigFallHeight)
         {
             anim.SetBool("bigFall", true);
+            hardLanding.Play();
+        }
+        if (1 < fallDistance && fallDistance < bigFallHeight)
+        {
+            landing.Play();
         }
 
         lastPosition = transform.position;
