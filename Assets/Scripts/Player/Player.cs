@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -32,6 +31,7 @@ public class Player : MonoBehaviour
 
     private Vector3 lastPosition;
 
+    private bool canJump = false;
 
     public GameObject Audio;
     private AudioSource jump;
@@ -77,8 +77,8 @@ public class Player : MonoBehaviour
     {
         if (IsGrounded())
         {
-            Move();
             Jump();
+            Move();    
         }
     }
 
@@ -106,7 +106,15 @@ public class Player : MonoBehaviour
         // Check if player is crouched before moving them and that they are not moving vertically at a high speed like jumping
         if (!anim.GetBool("isCrouching") && rb.velocity.y < 1)
         {
-            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+            if (anim.GetBool("isWalking"))
+            {
+                rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+            }
+            
+            else 
+            {
+                rb.AddForce(new Vector2(moveInput * moveSpeed, 0), ForceMode2D.Force);
+            }
         }
     }
 
@@ -135,11 +143,11 @@ public class Player : MonoBehaviour
             jumpTimeCounter = 0f;
             anim.SetBool("bigFall", false);
             anim.SetBool("isCrouching", true);
-            rb.velocity = new Vector2(0f, 0f);
+            canJump = true;
             
         }
 
-        if (UserInput.instance.controls.Jumping.Jump.IsPressed())
+        if (UserInput.instance.controls.Jumping.Jump.IsPressed() && canJump == true)
         {
             if (jumpTimeCounter <= jumpTimeMax)
             {
@@ -158,10 +166,11 @@ public class Player : MonoBehaviour
                 // reset jump counter
                 jumpTimeCounter = 0f;
                 jump.Play();
+                canJump = false;
             }
         }
 
-        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && anim.GetBool("isCrouching"))
+        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && canJump == true)
         {
                 
             // set counter to min if its below
@@ -182,6 +191,7 @@ public class Player : MonoBehaviour
             anim.SetBool("isCrouching", false);
             // reset jump counter
             jumpTimeCounter = 0f;
+            canJump = false;
         }
 
     }
