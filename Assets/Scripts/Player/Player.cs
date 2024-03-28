@@ -33,6 +33,8 @@ public class Player : MonoBehaviour
 
     private bool canJump = false;
 
+    private bool onIce = false;
+
     public GameObject Audio;
     private AudioSource jump;
     private AudioSource landing;
@@ -106,14 +108,19 @@ public class Player : MonoBehaviour
         // Check if player is crouched before moving them and that they are not moving vertically at a high speed like jumping
         if (!anim.GetBool("isCrouching") && rb.velocity.y < 1)
         {
-            if (anim.GetBool("isWalking"))
+
+            // movement on normal ground
+            if (anim.GetBool("isWalking") && !onIce)
             {
                 rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
             }
-            
+            // for movement on ice
             else 
             {
-                rb.AddForce(new Vector2(moveInput * moveSpeed, 0), ForceMode2D.Force);
+                if (rb.velocity.y < moveSpeed)
+                {
+                    rb.AddForce(new Vector2(moveInput * moveSpeed * .6f, 0), ForceMode2D.Force);
+                }
             }
         }
     }
@@ -214,6 +221,22 @@ public class Player : MonoBehaviour
         // check if the player is touching any collider
         if (groundHit.collider != null)
         {
+
+            // access the collider's GameObject directly
+            GameObject groundObject = groundHit.collider.gameObject;
+
+            Debug.Log("Collided with GameObject: \"" + groundObject.name + "\"");
+            // set the type of ground for determining movement style
+            if (groundObject.name == "Icy Terrain")
+            {
+                onIce = true;
+            }
+            else
+            {
+                onIce = false;
+            }
+
+
             CheckBigFall();
             // if the normal is vertical, treat it as ground
             anim.SetBool("isJumping", false);
