@@ -35,6 +35,8 @@ public class Player : MonoBehaviour
 
     private bool onIce = false;
 
+    private bool onSlant = false;
+
     public GameObject Audio;
     private AudioSource jump;
     private AudioSource landing;
@@ -94,7 +96,7 @@ public class Player : MonoBehaviour
     {
         moveInput = UserInput.instance.moveInput.x;
 
-        if (moveInput > 0 || moveInput < 0)
+        if (moveInput > 0 || moveInput < 0 && !onSlant)
         {
             anim.SetBool("bigFall", false);
             anim.SetBool("isWalking", true);
@@ -106,20 +108,29 @@ public class Player : MonoBehaviour
         }
 
         // Check if player is crouched before moving them and that they are not moving vertically at a high speed like jumping
-        if (!anim.GetBool("isCrouching") && rb.velocity.y < 1)
+        if (!anim.GetBool("isCrouching") && rb.velocity.y < 0.1 && rb.velocity.y > -0.1)
         {
 
             // movement on normal ground
-            if (anim.GetBool("isWalking") && !onIce)
+            if (anim.GetBool("isWalking") && !onIce && !onSlant)
             {
                 rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
             }
             // for movement on ice
             else 
             {
-                if (rb.velocity.y < moveSpeed)
+                // if on flat ice
+                if (rb.velocity.y < moveSpeed && !onSlant)
                 {
                     rb.AddForce(new Vector2(moveInput * moveSpeed * .6f, 0), ForceMode2D.Force);
+                }
+                // if on the slanted ice. this is here so that walking onto a slant works
+                else
+                {
+                    if (rb.velocity.y == 0 && rb.velocity.x == 0)
+                    {
+                        transform.position += new Vector3(moveInput * .05f, 0f, 0f);
+                    }
                 }
             }
         }
@@ -145,7 +156,7 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame())
+        if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && !onSlant)
         {
             jumpTimeCounter = 0f;
             anim.SetBool("bigFall", false);
@@ -154,7 +165,7 @@ public class Player : MonoBehaviour
             
         }
 
-        if (UserInput.instance.controls.Jumping.Jump.IsPressed() && canJump == true)
+        if (UserInput.instance.controls.Jumping.Jump.IsPressed() && canJump)
         {
             if (jumpTimeCounter <= jumpTimeMax)
             {
@@ -177,7 +188,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && canJump == true)
+        if (UserInput.instance.controls.Jumping.Jump.WasReleasedThisFrame() && canJump)
         {
                 
             // set counter to min if its below
@@ -227,17 +238,30 @@ public class Player : MonoBehaviour
 
             Debug.Log("Collided with GameObject: \"" + groundObject.name + "\"");
             // set the type of ground for determining movement style
-            if (groundObject.name == "Icy Terrain")
+            if (groundObject.name != "Terrain")
             {
                 onIce = true;
+                if (groundObject.name == "Slanted Icy Terrain")
+                {
+                    onSlant = true;
+                }
+                else
+                {
+                    onSlant = false;
+                }
             }
             else
             {
                 onIce = false;
+                onSlant = false;
+                
             }
 
-
-            CheckBigFall();
+            if (!onSlant)
+            {
+                CheckBigFall();
+            }
+            
             // if the normal is vertical, treat it as ground
             anim.SetBool("isJumping", false);
             anim.SetBool("isFalling", false);
