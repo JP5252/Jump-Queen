@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
                 // if on flat ice
                 if (rb.velocity.x < moveSpeed && rb.velocity.x > -moveSpeed && !onSlant)
                 {
-                    rb.AddForce(new Vector2(moveInput * moveSpeed * .8f, 0), ForceMode2D.Force);
+                    rb.AddForce(new Vector2(moveInput * 0.45f, 0), ForceMode2D.Impulse);
                 }
                 // if on the slanted ice. this is here so that walking onto a slant works
                 else
