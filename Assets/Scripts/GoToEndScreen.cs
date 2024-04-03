@@ -30,6 +30,8 @@ public class EndScreen : StateMachineBehaviour
         int numGems = StatTracker.getNumGems();
         PlayerPrefs.SetInt("numGems", numGems);
 
+        StatTracker.resetStats();
+
         SceneManager.LoadScene("End Screen");
     }
 }

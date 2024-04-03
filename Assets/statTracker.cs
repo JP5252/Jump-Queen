@@ -4,24 +4,36 @@ using UnityEngine;
 
 public class statTracker : MonoBehaviour
 {
-    private float startTime = 0;
+    private float startTime;
 
-    private int numJumps = 0;
+    private int numJumps;
 
-    private int numFalls = 0;
+    private int numFalls;
 
-    private int numGems = 0;
+    private int numGems;
 
     // Start is called before the first frame update
     void Start()
     {
         startTime = Time.time;
+        numJumps = 0;
+        numFalls = 0;
+        numGems = 0;
     }
 
     //to get the elapsed time for the end screen
     public float GetElapsedTime()
     {
         return Time.time - startTime;
+    }
+
+    // to reset stats when game is finished for restart
+    public void resetStats()
+    {
+        startTime = Time.time;
+        numJumps = 0;
+        numFalls = 0;
+        numGems = 0;
     }
 
     //for adding a jump
