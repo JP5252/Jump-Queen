@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
                 {
                     if (rb.velocity.y == 0 && rb.velocity.x == 0)
                     {
-                        transform.position += new Vector3(moveInput * .05f, 0f, 0f);
+                        transform.position += new Vector3(moveInput * .03f, 0f, 0f);
                     }
                 }
             }
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
     {
         if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && !onSlant)
         {
-            jumpTimeCounter = 0f;
+            jumpTimeCounter = Time.time;
             anim.SetBool("bigFall", false);
             anim.SetBool("isCrouching", true);
             canJump = true;
@@ -160,12 +160,8 @@ public class Player : MonoBehaviour
 
         if (UserInput.instance.controls.Jumping.Jump.IsPressed() && canJump)
         {
-            if (jumpTimeCounter <= jumpTimeMax)
-            {
-                jumpTimeCounter += Time.deltaTime;
-            }
-            else
-            {
+            if (Time.time - jumpTimeCounter >= jumpTimeMax)
+            { 
                 moveInput = UserInput.instance.moveInput.x;
 
                 // execute jump
@@ -189,10 +185,15 @@ public class Player : MonoBehaviour
         {
                 
             // set counter to min if its below
-            if (jumpTimeCounter < jumpTimeMin)
+            if (Time.time - jumpTimeCounter < jumpTimeMin)
             {
                 jumpTimeCounter = jumpTimeMin;
             }
+            else
+            {
+                jumpTimeCounter = Time.time - jumpTimeCounter;
+            }
+
             // get the player's input direction using the moveInput
             moveInput = UserInput.instance.moveInput.x;
 
