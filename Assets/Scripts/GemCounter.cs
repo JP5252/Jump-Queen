@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class GemCounter : MonoBehaviour
 {
     public Text gemCounterText; // Reference to the UI Text element for displaying gem count
+    public statTracker StatTracker;
 
     void Start()
     {
@@ -12,6 +13,6 @@ public class GemCounter : MonoBehaviour
 
     void UpdateGemCounter()
     {
-        gemCounterText.text = "Gems: " + gems.gemCount; // Update UI Text element with the gem count from the gems script
+        gemCounterText.text = "Gems: " + StatTracker.getNumGems();  //Update UI Text element with the gem count from the gems script
     }
 }

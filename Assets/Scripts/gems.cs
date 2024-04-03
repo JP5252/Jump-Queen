@@ -8,6 +8,8 @@ public class gems : MonoBehaviour
     public GameObject Audio;
     private AudioSource gemsound;
 
+    public statTracker StatTracker;
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -17,6 +19,8 @@ public class gems : MonoBehaviour
             gemsound = Audio.transform.Find("gemsound").GetComponent<AudioSource>();
             gemsound.Play();
             Destroy(gameObject);
+
+            StatTracker.addGem();
         }
     }
 

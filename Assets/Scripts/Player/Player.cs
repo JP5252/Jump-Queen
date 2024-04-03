@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool isFacingRight;
 
+    [Header("Other")]
     private Rigidbody2D rb;
     private Collider2D col;
     private Animator anim;
@@ -41,6 +42,8 @@ public class Player : MonoBehaviour
     private AudioSource jump;
     private AudioSource landing;
     private AudioSource hardLanding;
+
+    public statTracker StatTracker;
     
 
     /// <summary>
@@ -54,24 +57,10 @@ public class Player : MonoBehaviour
 
         isFacingRight = true;
 
+        jump = Audio.transform.Find("jump").GetComponent<AudioSource>();
+        landing = Audio.transform.Find("landing").GetComponent<AudioSource>();
+        hardLanding = Audio.transform.Find("hardLanding").GetComponent<AudioSource>();
 
-        // Assign the AudioSource components from child GameObjects
-        if (Audio != null)
-        {
-            jump = Audio.transform.Find("jump").GetComponent<AudioSource>();
-            landing = Audio.transform.Find("landing").GetComponent<AudioSource>();
-            hardLanding = Audio.transform.Find("hardLanding").GetComponent<AudioSource>();
-        }
-        else
-        {
-            Debug.LogError("The Audio GameObject is missing.");
-        }
-
-        // Check if any of the AudioSource components are null
-        if (jump == null || landing == null || hardLanding == null)
-        {
-            Debug.LogError("One or more AudioSource components are missing.");
-        }
     }
 
     /// <summary>
@@ -96,7 +85,11 @@ public class Player : MonoBehaviour
     {
         moveInput = UserInput.instance.moveInput.x;
 
-        if (moveInput > 0 || moveInput < 0 && !onSlant)
+        if (rb.constraints == RigidbodyConstraints2D.FreezePositionX)
+        {
+            anim.SetBool("isWalking", false);
+        }
+        else if (moveInput > 0 || moveInput < 0 && !onSlant)
         {
             anim.SetBool("bigFall", false);
             anim.SetBool("isWalking", true);
@@ -181,10 +174,14 @@ public class Player : MonoBehaviour
                 // set appropriate animation states
                 anim.SetBool("isJumping", true);
                 anim.SetBool("isCrouching", false);
+
                 // reset jump counter
                 jumpTimeCounter = 0f;
                 jump.Play();
                 canJump = false;
+
+                //increment jump counter
+                StatTracker.addJump();
             }
         }
 
@@ -207,9 +204,13 @@ public class Player : MonoBehaviour
             // set appropriate animation states
             anim.SetBool("isJumping", true);
             anim.SetBool("isCrouching", false);
+
             // reset jump counter
             jumpTimeCounter = 0f;
             canJump = false;
+
+            //increment jump counter
+            StatTracker.addJump();
         }
 
     }
@@ -236,7 +237,6 @@ public class Player : MonoBehaviour
             // access the collider's GameObject directly
             GameObject groundObject = groundHit.collider.gameObject;
 
-            Debug.Log("Collided with GameObject: \"" + groundObject.name + "\"");
             // set the type of ground for determining movement style
             if (groundObject.name != "Terrain")
             {
@@ -338,6 +338,9 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("bigFall", true);
             hardLanding.Play();
+
+            //increment fall counter
+            StatTracker.addFall();
         }
         if (1 < fallDistance && fallDistance < bigFallHeight)
         {
