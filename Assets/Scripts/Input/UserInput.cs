@@ -1,6 +1,8 @@
 using UnityEngine;
 
 /// <summary>
+/// Author: Justin Pearson
+/// 
 /// setup of a singleton class to take in our input from the user
 /// </summary>
 public class UserInput : MonoBehaviour
@@ -25,7 +27,7 @@ public class UserInput : MonoBehaviour
         controls = new Controls();
 
         controls.Movement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Movement.Move.canceled += ctx => moveInput = Vector2.zero; // Set to zero on release
+        controls.Movement.Move.canceled += ctx => moveInput = Vector2.zero; // set to zero on release
     }
 
     private void OnEnable()

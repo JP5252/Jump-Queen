@@ -1,5 +1,25 @@
 using UnityEngine;
 
+/// <summary>
+/// Author: Justin Pearson
+/// 
+/// This class takes in the users input and defines character movement it includes:
+/// Start() to set some of our variables like the players rigidbody
+/// Update() to wait for player input and set in motion our movement functions
+/// 
+/// Then there is the movement region which includes:
+/// Move() which is called when the player uses a move button which is implemented with Unitys input control
+/// Jump() which is called when the player uses a jump button implemented with Unitys input control
+/// 
+/// Then we have the ground check region:
+/// which has IsGrounded() which in our game must be called constantly to implement our falling functions
+/// 
+/// TurnCheck region which has:
+/// TurnCheck() which is called from the movement function to flip the characters model
+/// 
+/// BigFall region:
+/// CheckBigFall() which is called in the IsGrounded function when the player hits the ground after a fall
+/// </summary>
 public class Player : MonoBehaviour
 {
     [Header("Movement")]
@@ -21,6 +41,10 @@ public class Player : MonoBehaviour
     [HideInInspector] public bool isFacingRight;
 
     [Header("Other")]
+    [SerializeField] public GameObject Audio;
+    [SerializeField] public statTracker StatTracker;
+
+
     private Rigidbody2D rb;
     private Collider2D col;
     private Animator anim;
@@ -38,12 +62,12 @@ public class Player : MonoBehaviour
 
     private bool onSlant = false;
 
-    public GameObject Audio;
+    
     private AudioSource jump;
     private AudioSource landing;
     private AudioSource hardLanding;
 
-    public statTracker StatTracker;
+   
     
 
     /// <summary>
@@ -77,18 +101,26 @@ public class Player : MonoBehaviour
 
     #region Movement Functions
     /// <summary>
-    /// this is the logic for movement in the game, we first check that the player is not crouching and is on the ground
+    /// this is the logic for movement in the game, we first check that the player is not at the end scene, then if the player is 
+    /// not on a slanted terrain and have a move input.
     /// then set the player animation for iswalking on if the move input is there and peform a move check to make sure the player
-    /// is facing the right direction, after that we can set the players x velocity to the movespeed in the direction they are going.
+    /// is facing the right direction, 
+    /// after that we can set the players x velocity to the movespeed in the direction they are going if they are on normal terrain
+    /// if they are not then we check if they are on ice then there are two options:
+    /// 1. on flat ice they will have force applied to them so the movment is not instant and more slippery feeling
+    /// 2. if they are on slanted ice the player will be translated slightly on the x axis in the direction they want to go,
+    /// this allows for the player to get up slanted jump they just barely make, as well as allows the walking into slants from the edge
     /// </summary>
     private void Move()
     {
         moveInput = UserInput.instance.moveInput.x;
 
+        // check if the player is at the ending animation by checking their constraints
         if (rb.constraints == RigidbodyConstraints2D.FreezePositionX)
         {
             anim.SetBool("isWalking", false);
         }
+        //check the players input is in a direction or left or right and they are not on a slant
         else if (moveInput > 0 || moveInput < 0 && !onSlant)
         {
             anim.SetBool("bigFall", false);
@@ -135,21 +167,19 @@ public class Player : MonoBehaviour
     /// This is the logic for the jump, first there will be a check if the player is grounded and if they are, then the player may begin their jump
     /// the jump is split into three parts
     /// 1. the frame the jump button was pressed
-    ///     - the jumpTimeCounter will be set to 0
+    ///     - the jumpTimeCounter will be set to current time
     ///     - the crouch animation will begin
-    ///     - all players will be set to 0
+    ///     - canJump bool will be set to true, this will prevent a jump unless this part of the function executes
     /// 2. while the jump button is being pressed down
-    ///     - every frame the counter will be incremented
+    ///     - every frame we check the time passed is less than the max jump time, and execute the jump is it is
     /// 3. when the jump button is released
-    ///     - if the jump counter is less than the set minimum, the player will jump the minimum
-    ///     - if the jump counter is less than max, then the player will jump based on how long they held the jump button
-    ///     - if the jump counter is more than max, the player will jump the max height
-    ///     - the player will jump either straight up, to the left or to the right depending on their direction input
-    ///     - then the crouching animation will be cancelled and the jumping animation will begin, as well as resetting the counter again
+    ///     - check if the time passed is less than minimum jump, set the jump counter to min if it is
+    ///     - set the jumptimecounter to Time.time - jumptimecounter otherwise
+    ///     - then we will execute the jump
     /// </summary>
     private void Jump()
     {
-        if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && !onSlant)
+        if (UserInput.instance.controls.Jumping.Jump.WasPressedThisFrame() && !onSlant && rb.constraints != RigidbodyConstraints2D.FreezePositionX)
         {
             jumpTimeCounter = Time.time;
             anim.SetBool("bigFall", false);
@@ -189,6 +219,7 @@ public class Player : MonoBehaviour
             {
                 jumpTimeCounter = jumpTimeMin;
             }
+            // set to difference between that and time otherwise
             else
             {
                 jumpTimeCounter = Time.time - jumpTimeCounter;

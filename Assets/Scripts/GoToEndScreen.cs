@@ -1,8 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Author: Justin Pearson
+/// 
+/// This script executes when the cat finishes their animation.
+/// It takes all the stats from the statTracker script and sets them as playerprefs to send to then end scene.
+/// then it resets the stats and sends the game to the end scene
+/// </summary>
 public class EndScreen : StateMachineBehaviour
 {
     private statTracker StatTracker;

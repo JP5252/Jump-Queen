@@ -8,7 +8,7 @@ public class gems : MonoBehaviour
     public GameObject Audio;
     private AudioSource gemsound;
 
-    public statTracker StatTracker;
+    public statTracker StatTracker; // added by Justin adding the Gem to statTacker
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,7 +20,7 @@ public class gems : MonoBehaviour
             gemsound.Play();
             Destroy(gameObject);
 
-            StatTracker.addGem();
+            StatTracker.addGem(); // added by Justin adding the Gem to statTacker
         }
     }
 

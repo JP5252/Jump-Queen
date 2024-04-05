@@ -1,7 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Author: Justin Pearson
+/// 
+/// This script sets in actrion the end scene of the game.
+/// </summary>
 public class EndGame : MonoBehaviour
 {
     private Animator anim;
@@ -11,6 +14,7 @@ public class EndGame : MonoBehaviour
 
     public GameObject player;
     private Rigidbody2D rb;
+
     private void Start()
     {
         anim = GetComponent<Animator>();
@@ -20,9 +24,14 @@ public class EndGame : MonoBehaviour
         rb = player.transform.GetComponent<Rigidbody2D>();
     }
 
-    // Called when another collider enters the trigger
+    /// <summary>
+    /// called when a boxcollider collides with the cats collider
+    /// we will then turn off the music and begin the cats animationa and sound as well as freeze player movement
+    /// </summary>
+    /// <param name="other">the other boxcollider</param>
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // maker sure the collider is the player
         if (other.CompareTag("Player"))
         {
             anim.SetBool("Stretch", true);
