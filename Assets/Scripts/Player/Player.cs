@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
             anim.SetBool("isWalking", false);
         }
         //check the players input is in a direction or left or right and they are not on a slant
-        else if (moveInput > 0 || moveInput < 0 && !onSlant)
+        else if ((moveInput > 0 || moveInput < 0) && !onSlant)
         {
             anim.SetBool("bigFall", false);
             anim.SetBool("isWalking", true);
